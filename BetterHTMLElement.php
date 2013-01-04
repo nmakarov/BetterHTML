@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class represents an HTML element and holds the tree of underlying elements. 
+ */
 class BetterHTMLElement
 {
 	protected $tag = 'empty';
