@@ -1,15 +1,8 @@
 <?php
 
-if (class_exists('Yii'))
-	$framework = 'Yii';
-else if (class_exists('App'))
-	$framework = 'App';
-else
-	throw new Exception ("No framework found.");
+require_once(dirname(__FILE__).'/../../BetterHTMLElement.php');
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."TestCase{$framework}.php");
-
-class BetterHtmlTest extends ATestCase
+class BetterHtmlTest extends PHPUnit_Framework_TestCase
 {
 // App::i()->import('framework/BetterHTMLElement');
 // class BetterHtmlTest extends AppTest
