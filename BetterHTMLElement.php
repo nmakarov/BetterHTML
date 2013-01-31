@@ -14,6 +14,9 @@ class BetterHTMLElement
 	protected $lastInsertedElement = NULL;
 	protected $previousElement = NULL;
 
+	protected $prettyOpenTags = array('table', 'p', 'thead', 'tbody', 'tr');
+	protected $prettyCloseTags = array('table', 'p', 'thead', 'tbody', 'tr');
+
 	public function __construct($selector=NULL, $context=NULL)
 	{
 		if ( ! is_null($selector))
@@ -260,15 +263,17 @@ class BetterHTMLElement
 	 * @param  boolean $pretty Whenever pretty HTML with line breaks is needed
 	 * @return string          HTML chunk
 	 */
-	public function asHtml($pretty=TRUE)
+	public function asHtml($pretty=TRUE, $level=0)
 	{
 		if ($this->isEmpty())
 			return '';
 
-		if ($this->tag === 'text')
-			return $this->text;
+		$ident = $pretty ? str_repeat(' ', $level*4) : '';
 
-		$html = "<$this->tag";
+		if ($this->tag === 'text')
+			return "$this->text";
+
+		$html = "$ident<{$this->tag}";
 
 		// append attrs and classes as needed
 		if ($classes = implode(' ', $this->classes))
@@ -279,18 +284,19 @@ class BetterHTMLElement
 
 		$html .= ">";
 
-
-		if ($pretty)
+		if ($pretty && in_array($this->tag, $this->prettyOpenTags))
 			$html .= "\n";
 
 		foreach ($this->children as $child)
-			$html .= $child->asHtml($pretty);
+			$html .= $child->asHtml($pretty, $level+1);
+
+		if ($pretty && in_array($this->tag, $this->prettyCloseTags))
+			$html .= $ident;
 
 		$html .= "</$this->tag>";
 		if ($pretty)
 			$html .= "\n";
 		return $html;
-		// return the HTML
 	}
 
 	protected function parseSelector($selector, $context=NULL)
